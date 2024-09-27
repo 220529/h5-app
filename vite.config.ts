@@ -1,8 +1,7 @@
 import path from "path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
-// @ts-ignore
-import postcssPxToViewport from 'postcss-px-to-viewport'; // 使用 ES 模块导入
+import postCssPxToRem from "postcss-pxtorem";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -16,18 +15,14 @@ export default defineConfig({
   css: {
     postcss: {
       plugins: [
-        postcssPxToViewport({
-          // unitToConvert: "PX",
-          // 设计稿的基准视口宽度
-          viewportWidth: 750,
-          // 转换后单位的小数点精度
-          unitPrecision: 5,
-          viewportUnit: "vw",
-          selectorBlackList: [".ignore", ".hairlines"],
-          minPixelValue: 1,
-          mediaQuery: false,
-          // 忽略特定文件夹或文件的正则表达式列表
-          exclude: /(\/|\\)(node_modules)(\/|\\)/,
+        postCssPxToRem({
+          rootValue: 750 / 10, // 1rem = 75px，当设计稿宽度为750px时
+          propList: ["*"], // 允许转换的属性，* 表示所有属性都进行转换
+          unitPrecision: 5, // 保留rem小数点后的位数
+          selectorBlackList: [], // 忽略转换的选择器，保留px
+          replace: true, // 是否直接替换px为rem
+          mediaQuery: false, // 是否在媒体查询中转换px
+          minPixelValue: 0, // 小于或等于这个值的px不转换为rem
         }),
       ],
     },
